@@ -37,6 +37,47 @@ body{
   transition:background-color .3s,color .3s;
 }
 
+/* ===== شاشة القفل ===== */
+#lockScreen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);color:var(--txt);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;padding:20px;font-family:inherit;
+  background-image:radial-gradient(900px 500px at 50% -10%,var(--bgGlow),transparent);
+}
+#lockScreen .lockIcon{
+  width:80px;height:80px;border-radius:20px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:grid;place-items:center;font-size:40px;
+  box-shadow:0 8px 32px #fbbf2455;
+}
+#lockScreen h1{font-size:22px;color:var(--gold);font-weight:900}
+#lockScreen p.hint{color:var(--muted);font-size:14px;text-align:center;line-height:1.6}
+#lockScreen input{
+  width:100%;max-width:320px;padding:14px 18px;font-size:18px;
+  text-align:center;background:var(--panel);border:2px solid var(--line);
+  border-radius:12px;color:var(--txt);outline:none;font-family:inherit;
+  letter-spacing:6px;font-weight:700;
+}
+#lockScreen input:focus{border-color:var(--gold)}
+#lockScreen button{
+  width:100%;max-width:320px;padding:14px;font-size:16px;font-weight:800;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#3b2600;border:none;border-radius:12px;cursor:pointer;font-family:inherit;
+  transition:.15s;
+}
+#lockScreen button:active{transform:scale(.97)}
+#lockScreen .err{color:#ef4444;font-size:13px;height:18px;font-weight:700}
+#lockScreen .copy{color:var(--muted);font-size:11px;opacity:.5;margin-top:20px}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-6px)}
+  80%{transform:translateX(6px)}
+}
+.shake{animation:shake .35s}
+
 /* ===== الهيدر ===== */
 header{
   flex:0 0 auto;
@@ -56,7 +97,6 @@ header .icon{
 }
 header h1{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* زر الرجوع */
 header .back{
   display:none;background:var(--panel);border:1px solid var(--line);color:var(--txt);
   width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:18px;flex-shrink:0;
@@ -64,9 +104,7 @@ header .back{
 }
 header .back.show{display:flex}
 header .back:active{transform:scale(.92)}
-header .back:hover{background:var(--panel2)}
 
-/* زر المظهر — دائرة بأيقونة SVG */
 header .theme{
   background:var(--panel);border:1px solid var(--line);color:var(--txt);
   width:38px;height:38px;border-radius:50%;cursor:pointer;flex-shrink:0;
@@ -82,17 +120,15 @@ header .theme svg{
   transition:stroke .3s;
 }
 
-/* زر التثبيت */
 header .install{
   background:linear-gradient(135deg,var(--gold),var(--gold2));
   border:none;color:#3b2600;
   width:38px;height:38px;border-radius:10px;cursor:pointer;
   flex-shrink:0;
-  display:none;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   transition:.15s;box-shadow:0 3px 10px #fbbf2440;
   animation:pulseBtn 2.2s infinite;
 }
-header .install.show{display:flex}
 header .install:hover{filter:brightness(1.1)}
 header .install:active{transform:scale(.92)}
 header .install svg{
@@ -110,6 +146,8 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 
 #homeScreen{overflow-y:auto;padding:16px}
 #homeScreen.hide{display:none}
+.intro{text-align:center;padding:4px 12px 16px}
+.intro h2{font-size:24px;color:var(--gold);font-weight:800}
 .grid{
   display:grid;gap:10px;
   grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
@@ -236,6 +274,9 @@ body.light .item.revealed{
   .grid{grid-template-columns:repeat(3,1fr);gap:8px}
   .modelCard{padding:12px 6px}
   .modelCard .num{font-size:26px}
+  .intro h2{font-size:20px}
+  #lockScreen .lockIcon{width:70px;height:70px;font-size:34px}
+  #lockScreen h1{font-size:19px}
 }
 
 @media print{
@@ -247,6 +288,17 @@ body.light .item.revealed{
 </head>
 <body>
 
+<!-- ============ شاشة القفل ============ -->
+<div id="lockScreen">
+  <div class="lockIcon">🔒</div>
+  <h1>مسابقة الحروف</h1>
+  <p class="hint">هذا التطبيق خاص بالمعلم فقط<br>أدخل كلمة المرور للمتابعة</p>
+  <input id="pwdInput" type="password" placeholder="••••" inputmode="numeric" autocomplete="off" maxlength="10">
+  <button id="pwdBtn">دخول</button>
+  <p class="err" id="pwdError"></p>
+  <p class="copy">© المعلم — جميع الحقوق محفوظة</p>
+</div>
+
 <header>
   <div class="brand">
     <div class="icon">أ</div>
@@ -254,13 +306,10 @@ body.light .item.revealed{
   </div>
   <button class="back" id="backBtn" aria-label="رجوع">←</button>
 
-  <!-- زر المظهر (شمس/قمر SVG) -->
   <button class="theme" id="themeBtn" aria-label="تبديل المظهر">
-    <!-- أيقونة القمر (للمظهر الداكن) -->
     <svg id="iconMoon" viewBox="0 0 24 24">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
     </svg>
-    <!-- أيقونة الشمس (للمظهر الفاتح) -->
     <svg id="iconSun" viewBox="0 0 24 24" style="display:none">
       <circle cx="12" cy="12" r="4"/>
       <line x1="12" y1="2"  x2="12" y2="4"/>
@@ -274,7 +323,6 @@ body.light .item.revealed{
     </svg>
   </button>
 
-  <!-- زر التثبيت -->
   <button class="install" id="installBtn" aria-label="تثبيت التطبيق">
     <svg viewBox="0 0 24 24">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -286,6 +334,7 @@ body.light .item.revealed{
 
 <main>
   <section id="homeScreen">
+    <div class="intro"><h2>اختر النموذج للبدء</h2></div>
     <div class="grid" id="modelsGrid"></div>
   </section>
 
@@ -302,6 +351,47 @@ body.light .item.revealed{
 </main>
 
 <script>
+/* =========================================================
+   شاشة القفل — كلمة المرور: 3302
+   ========================================================= */
+(function lockApp(){
+  const PASSWORD = '3302';
+  const SESSION_KEY = 'quiz_auth_v1';
+
+  const $lock = document.getElementById('lockScreen');
+  const $pwd  = document.getElementById('pwdInput');
+  const $btn  = document.getElementById('pwdBtn');
+  const $err  = document.getElementById('pwdError');
+
+  try{
+    if(sessionStorage.getItem(SESSION_KEY) === 'ok'){
+      $lock.style.display = 'none';
+      return;
+    }
+  }catch(e){}
+
+  document.body.style.overflow = 'hidden';
+
+  function tryUnlock(){
+    const v = $pwd.value.trim();
+    if(v === PASSWORD){
+      try{ sessionStorage.setItem(SESSION_KEY, 'ok'); }catch(e){}
+      $lock.style.display = 'none';
+      document.body.style.overflow = '';
+    } else {
+      $err.textContent = '❌ كلمة المرور غير صحيحة';
+      $pwd.value = '';
+      $pwd.focus();
+      $lock.classList.add('shake');
+      setTimeout(() => $lock.classList.remove('shake'), 400);
+    }
+  }
+
+  $btn.addEventListener('click', tryUnlock);
+  $pwd.addEventListener('keydown', e => { if(e.key === 'Enter') tryUnlock(); });
+  setTimeout(() => $pwd.focus(), 200);
+})();
+
 /* =========================================================
    البيانات — 18 نموذج × 28 حرفاً (أ → ي)
    ========================================================= */
@@ -552,7 +642,7 @@ document.addEventListener('gesturestart', e => e.preventDefault());
    ========================================================= */
 if('serviceWorker' in navigator){
   const swCode = `
-    const CACHE='quiz-v3';
+    const CACHE='quiz-v4';
     self.addEventListener('install', e => self.skipWaiting());
     self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
     self.addEventListener('fetch', e => {
@@ -596,7 +686,6 @@ let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  if($install) $install.classList.add('show');
 });
 
 if($install){
@@ -605,7 +694,7 @@ if($install){
       deferredPrompt.prompt();
       try{
         const { outcome } = await deferredPrompt.userChoice;
-        if(outcome === 'accepted') $install.classList.remove('show');
+        if(outcome === 'accepted') $install.style.display = 'none';
       }catch(e){}
       deferredPrompt = null;
     } else {
@@ -615,10 +704,9 @@ if($install){
 }
 
 window.addEventListener('appinstalled', () => {
-  if($install) $install.classList.remove('show');
+  if($install) $install.style.display = 'none';
 });
 
-/* إخفاء الزر إذا كان التطبيق مثبتاً بالفعل */
 if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true){
   if($install) $install.style.display = 'none';
 }
