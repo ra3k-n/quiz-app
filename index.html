@@ -120,27 +120,6 @@ header .theme svg{
   transition:stroke .3s;
 }
 
-header .install{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  border:none;color:#3b2600;
-  width:38px;height:38px;border-radius:10px;cursor:pointer;
-  flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  transition:.15s;box-shadow:0 3px 10px #fbbf2440;
-  animation:pulseBtn 2.2s infinite;
-}
-header .install:hover{filter:brightness(1.1)}
-header .install:active{transform:scale(.92)}
-header .install svg{
-  width:20px;height:20px;
-  stroke:#3b2600;fill:none;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
-}
-@keyframes pulseBtn{
-  0%,100%{box-shadow:0 3px 10px #fbbf2440}
-  50%{box-shadow:0 3px 20px #fbbf2480}
-}
-
 /* ===== المحتوى ===== */
 main{flex:1;min-height:0;display:flex;flex-direction:column}
 
@@ -258,8 +237,8 @@ body.light .item.revealed{
   header h1{font-size:15px}
   header .icon,header .back{width:34px;height:34px;font-size:16px}
   header .icon{font-size:18px}
-  header .theme,header .install{width:34px;height:34px}
-  header .theme svg,header .install svg{width:18px;height:18px}
+  header .theme{width:34px;height:34px}
+  header .theme svg{width:18px;height:18px}
   #quizScreen{padding:4px;gap:4px}
   .items{gap:4px}
   .item{padding:4px 7px;gap:6px;border-radius:10px}
@@ -280,7 +259,7 @@ body.light .item.revealed{
 }
 
 @media print{
-  header .theme,header .install,.revealBtn,.bottomBar{display:none!important}
+  header .theme,.revealBtn,.bottomBar{display:none!important}
   .a{display:inline-block!important}
   .item{page-break-inside:avoid}
 }
@@ -346,29 +325,21 @@ body.light .item.revealed{
 <script>
 /* =========================================================
    شاشة القفل — كلمة المرور: 3302
+   يطلبها في كل مرة (حتى مع تحديث الصفحة)
    ========================================================= */
 (function lockApp(){
   const PASSWORD = '3302';
-  const SESSION_KEY = 'quiz_auth_v1';
 
   const $lock = document.getElementById('lockScreen');
   const $pwd  = document.getElementById('pwdInput');
   const $btn  = document.getElementById('pwdBtn');
   const $err  = document.getElementById('pwdError');
 
-  try{
-    if(sessionStorage.getItem(SESSION_KEY) === 'ok'){
-      $lock.style.display = 'none';
-      return;
-    }
-  }catch(e){}
-
   document.body.style.overflow = 'hidden';
 
   function tryUnlock(){
     const v = $pwd.value.trim();
     if(v === PASSWORD){
-      try{ sessionStorage.setItem(SESSION_KEY, 'ok'); }catch(e){}
       $lock.style.display = 'none';
       document.body.style.overflow = '';
     } else {
@@ -446,7 +417,6 @@ const $title   = document.getElementById('title');
 const $theme   = document.getElementById('themeBtn');
 const $iconSun = document.getElementById('iconSun');
 const $iconMoon= document.getElementById('iconMoon');
-const $install = document.getElementById('installBtn');
 
 /* ============ المظهر ============ */
 function applyTheme(mode){
@@ -631,11 +601,11 @@ window.addEventListener('orientationchange', () => setTimeout(fitAllItems, 200))
 document.addEventListener('gesturestart', e => e.preventDefault());
 
 /* =========================================================
-   PWA
+   PWA — للتثبيت والعمل بدون إنترنت
    ========================================================= */
 if('serviceWorker' in navigator){
   const swCode = `
-    const CACHE='quiz-v4';
+    const CACHE='quiz-v5';
     self.addEventListener('install', e => self.skipWaiting());
     self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
     self.addEventListener('fetch', e => {
@@ -672,37 +642,6 @@ if('serviceWorker' in navigator){
   link.href = URL.createObjectURL(blob);
   document.head.appendChild(link);
 })();
-
-/* ============ زر التثبيت ============ */
-let deferredPrompt = null;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-if($install){
-  $install.addEventListener('click', async () => {
-    if(deferredPrompt){
-      deferredPrompt.prompt();
-      try{
-        const { outcome } = await deferredPrompt.userChoice;
-        if(outcome === 'accepted') $install.style.display = 'none';
-      }catch(e){}
-      deferredPrompt = null;
-    } else {
-      alert('📱 لتثبيت التطبيق:\n\n• أندرويد: القائمة ⋮ ثم "إضافة إلى الشاشة الرئيسية"\n\n• آيفون: زر المشاركة ⬆️ ثم "إضافة إلى الشاشة الرئيسية"\n\n• الكمبيوتر (Chrome/Edge): أيقونة التثبيت ⊕ في شريط العنوان');
-    }
-  });
-}
-
-window.addEventListener('appinstalled', () => {
-  if($install) $install.style.display = 'none';
-});
-
-if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true){
-  if($install) $install.style.display = 'none';
-}
 </script>
 </body>
 </html>
