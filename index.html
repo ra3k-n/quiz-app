@@ -20,9 +20,9 @@
 }
 body.light{
   --bg:#f1f5f9; --bg2:#e2e8f0; --panel:#ffffff; --panel2:#f8fafc;
-  --line:#cbd5e1; --txt:#0f172a; --muted:#64748b;
+  --line:#cbd5e1; --txt:#000000; --muted:#1e293b;
   --bgGlow:#fbbf2418;
-  --iconStroke:#0f172a;
+  --iconStroke:#000000;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
 html,body{height:100%;overscroll-behavior:none}
@@ -51,8 +51,8 @@ body{
   display:grid;place-items:center;font-size:40px;
   box-shadow:0 8px 32px #fbbf2455;
 }
-#lockScreen h1{font-size:22px;color:var(--gold);font-weight:900}
-#lockScreen p.hint{color:var(--muted);font-size:14px;text-align:center;line-height:1.6}
+#lockScreen h1{font-size:44px;color:var(--gold);font-weight:900}
+#lockScreen p.hint{color:var(--muted);font-size:17px;font-weight:700;text-align:center;line-height:1.6}
 #lockScreen input{
   width:100%;max-width:320px;padding:14px 18px;font-size:18px;
   text-align:center;background:var(--panel);border:2px solid var(--line);
@@ -88,7 +88,10 @@ header{
   z-index:100;
   transition:background-color .3s,border-color .3s;
 }
-header .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+header .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:pointer;user-select:none}
+header .modelTitle{position:absolute;left:50%;transform:translateX(-50%);font-size:20px;font-weight:900;color:var(--gold);white-space:nowrap;pointer-events:none}
+body.light header .modelTitle{color:#000}
+header{position:relative}
 header .icon{
   width:38px;height:38px;border-radius:10px;flex-shrink:0;
   background:linear-gradient(135deg,var(--gold),var(--gold2));
@@ -97,13 +100,6 @@ header .icon{
 }
 header h1{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-header .back{
-  display:none;background:var(--panel);border:1px solid var(--line);color:var(--txt);
-  width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:18px;flex-shrink:0;
-  align-items:center;justify-content:center;transition:.15s;
-}
-header .back.show{display:flex}
-header .back:active{transform:scale(.92)}
 
 header .theme{
   background:var(--panel);border:1px solid var(--line);color:var(--txt);
@@ -153,14 +149,14 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 
 .items{
   flex:1;min-height:0;
-  display:grid;grid-template-rows:repeat(7,1fr);
+  display:grid;grid-template-rows:repeat(4,1fr);
   gap:5px;
 }
 .item{
   display:flex;align-items:center;gap:8px;
   background:linear-gradient(180deg,var(--panel),var(--panel2));
   border:1px solid var(--line);border-radius:12px;
-  padding:5px 10px;min-height:0;overflow:hidden;
+  padding:6px 10px;min-height:0;overflow:hidden;
   transition:border-color .2s,background .2s;
 }
 .item.revealed{
@@ -183,22 +179,23 @@ body.light .item.revealed{
 .qgroup{
   flex:1;min-width:0;
   display:flex;align-items:center;justify-content:center;
-  gap:10px;overflow:hidden;
+  gap:10px;overflow:hidden;flex-wrap:wrap;
 }
 .q{
   flex:0 1 auto;min-width:0;
-  white-space:nowrap;overflow:hidden;
+  white-space:normal;overflow:visible;
   text-align:center;
-  font-size:20px;font-weight:700;
-  line-height:1.15;
+  font-size:24px;font-weight:800;
+  line-height:1.7;padding:2px 0;
 }
+body.light .q{color:#000;font-weight:800}
 .a{
   color:var(--ok);font-weight:800;
   padding-right:10px;
   border-right:2px solid var(--ok);
-  white-space:nowrap;
+  white-space:normal;
   display:none;
-  font-size:18px;
+  font-size:20px;line-height:1.7;
 }
 .item.revealed .a{display:inline-block}
 
@@ -235,16 +232,18 @@ body.light .item.revealed{
 @media(max-width:600px){
   header{padding:8px 10px;gap:6px}
   header h1{font-size:15px}
-  header .icon,header .back{width:34px;height:34px;font-size:16px}
+  header .icon{width:34px;height:34px;font-size:16px}
+  header .modelTitle{font-size:17px}
   header .icon{font-size:18px}
   header .theme{width:34px;height:34px}
   header .theme svg{width:18px;height:18px}
   #quizScreen{padding:4px;gap:4px}
   .items{gap:4px}
   .item{padding:4px 7px;gap:6px;border-radius:10px}
+  .letter{width:40px;height:40px}
   .letter{width:38px;height:38px;font-size:17px;border-radius:9px}
-  .q{font-size:14px}
-  .a{font-size:13px;padding-right:8px}
+  .q{font-size:17px}
+  .a{font-size:15px;padding-right:8px}
   .revealBtn{padding:7px 10px;font-size:11px;min-width:54px;border-radius:8px}
   .bottomBar{padding:7px 10px;gap:8px}
   .bottomBar .info{font-size:11px}
@@ -255,7 +254,7 @@ body.light .item.revealed{
   .modelCard .num{font-size:26px}
   .intro h2{font-size:20px}
   #lockScreen .lockIcon{width:70px;height:70px;font-size:34px}
-  #lockScreen h1{font-size:19px}
+  #lockScreen h1{font-size:36px}
 }
 
 @media print{
@@ -269,21 +268,19 @@ body.light .item.revealed{
 
 <!-- ============ شاشة القفل ============ -->
 <div id="lockScreen">
-  <div class="lockIcon">🔒</div>
   <h1>مسابقة الحروف</h1>
-  <p class="hint">هذا التطبيق خاص بالمعلم فقط<br>أدخل كلمة المرور للمتابعة</p>
+  <p class="hint">أدخل كلمة المرور</p>
   <input id="pwdInput" type="password" placeholder="••••" inputmode="numeric" autocomplete="off" maxlength="10">
   <button id="pwdBtn">دخول</button>
   <p class="err" id="pwdError"></p>
-  <p class="copy">© المعلم — جميع الحقوق محفوظة</p>
 </div>
 
 <header>
-  <div class="brand">
+  <div class="brand" id="brandBtn" role="button" tabindex="0" aria-label="الصفحة الرئيسية">
     <div class="icon">أ</div>
     <h1 id="title">مسابقة الحروف</h1>
   </div>
-  <button class="back" id="backBtn" aria-label="رجوع">←</button>
+  <div class="modelTitle" id="modelTitle"></div>
 
   <button class="theme" id="themeBtn" aria-label="تبديل المظهر">
     <svg id="iconMoon" viewBox="0 0 24 24">
@@ -401,7 +398,7 @@ const MODELS = [
 /* =========================================================
    المنطق
    ========================================================= */
-const PER_PAGE = 7;
+const PER_PAGE = 4;
 let currentModel = 0;
 let currentPage = 0;
 
@@ -410,7 +407,8 @@ const $quiz    = document.getElementById('quizScreen');
 const $grid    = document.getElementById('modelsGrid');
 const $items   = document.getElementById('itemsBox');
 const $pageInfo= document.getElementById('pageInfo');
-const $back    = document.getElementById('backBtn');
+const $brand   = document.getElementById('brandBtn');
+const $mtitle  = document.getElementById('modelTitle');
 const $prev    = document.getElementById('prevBtn');
 const $next    = document.getElementById('nextBtn');
 const $title   = document.getElementById('title');
@@ -431,12 +429,9 @@ function applyTheme(mode){
     $iconMoon.style.display = 'block';
     document.querySelector('meta[name=theme-color]').setAttribute('content','#0b1220');
   }
-  try{ localStorage.setItem('quizTheme', mode); }catch(e){}
 }
 (function initTheme(){
-  let saved = 'dark';
-  try{ saved = localStorage.getItem('quizTheme') || 'dark'; }catch(e){}
-  applyTheme(saved);
+  applyTheme('light');
 })();
 $theme.addEventListener('click', () => {
   applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
@@ -462,8 +457,7 @@ function openModel(idx){
   currentPage = 0;
   $home.classList.add('hide');
   $quiz.classList.add('active');
-  $back.classList.add('show');
-  $title.textContent = `النموذج ${idx+1}`;
+  $mtitle.textContent = `النموذج ${idx+1}`;
   renderPage();
   window.scrollTo(0,0);
 }
@@ -471,8 +465,7 @@ function openModel(idx){
 function closeModel(){
   $home.classList.remove('hide');
   $quiz.classList.remove('active');
-  $back.classList.remove('show');
-  $title.textContent = 'مسابقة الحروف';
+  $mtitle.textContent = '';
   window.scrollTo(0,0);
 }
 
@@ -544,36 +537,21 @@ function fitItem(item){
   const a    = item.querySelector('.a');
   const wrap = item.querySelector('.qgroup');
   if(!q || !wrap) return;
-  const wrapW = wrap.clientWidth;
-  if(!wrapW) return;
-
-  const revealed = item.classList.contains('revealed');
-  let size = 26;
-
-  const apply = (s) => {
-    q.style.fontSize = s + 'px';
-    a.style.fontSize = (s * 0.9) + 'px';
-  };
+  const mobile = window.innerWidth <= 600;
+  let size = mobile ? 20 : 28;
+  const apply = (s) => { q.style.fontSize = s + 'px'; a.style.fontSize = (s*0.9) + 'px'; };
   apply(size);
-
-  const tooWide = () => {
-    let w = q.scrollWidth;
-    if(revealed) w += a.scrollWidth + 14;
-    return w > wrapW - 4;
-  };
-
-  let guard = 70;
-  while(tooWide() && size > 10 && guard-- > 0){
-    size -= 0.5;
-    apply(size);
-  }
+  const over = () => item.scrollHeight > item.clientHeight + 1 || wrap.scrollHeight > wrap.clientHeight + 1;
+  let guard = 60;
+  while(over() && size > 11 && guard-- > 0){ size -= 0.5; apply(size); }
 }
 function fitAllItems(){
   document.querySelectorAll('#itemsBox .item').forEach(fitItem);
 }
 
 /* ============ التنقل ============ */
-$back.addEventListener('click', closeModel);
+$brand.addEventListener('click', closeModel);
+$brand.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') closeModel(); });
 $prev.addEventListener('click', () => {
   if(currentPage > 0){ currentPage--; renderPage(); window.scrollTo(0,0); }
 });
